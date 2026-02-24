@@ -7,8 +7,34 @@
  * Rogue agent kill switch. Threat intelligence feed.
  * ClawGuard Certified program for premium skill publishers.
  *
- * Phase 1 build target: 3-5 weeks
+ * Unlike SecureClaw (~1,230 tokens in-context, prompt-injectable),
+ * ClawGuard operates at process/network level. You can't prompt-inject
+ * a network firewall.
+ *
  * Revenue: Free → $19/mo → $2,500-10K/mo enterprise
  */
+
 export const VERSION = '0.1.0';
-export { }; // placeholder
+
+// Core components
+export { RuntimeMonitor } from './runtime-monitor.js';
+export type { MonitorConfig } from './runtime-monitor.js';
+export { PolicyEngine, DEFAULT_POLICY } from './policy-engine.js';
+export { KillSwitch } from './kill-switch.js';
+export { ThreatIntel } from './threat-intel.js';
+
+// Types
+export type {
+  SecurityPolicy,
+  NetworkPolicy,
+  FilesystemPolicy,
+  ProcessPolicy,
+  CostAnomalyPolicy,
+  ThreatDetection,
+  ThreatSignature,
+  KillSwitchResult,
+  NetworkRequestDetails,
+  FileAccessDetails,
+  ProcessSpawnDetails,
+  CostAnomalyDetails,
+} from './types.js';

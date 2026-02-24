@@ -6,6 +6,7 @@ export default defineConfig({
     alias: {
       '@clawstack/shared': resolve(__dirname, 'packages/shared/index.ts'),
       '@clawstack/clawforge': resolve(__dirname, 'packages/clawforge/src/index.ts'),
+      '@clawstack/clawguard': resolve(__dirname, 'packages/clawguard/src/index.ts'),
     },
   },
 });
