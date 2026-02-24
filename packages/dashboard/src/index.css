@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-claw-bg text-claw-text;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-claw-bg;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-claw-border rounded-full;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-claw-surface border border-claw-border rounded-lg p-4;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium;
+  }
+
+  .badge-danger {
+    @apply bg-red-500/20 text-red-400;
+  }
+
+  .badge-warning {
+    @apply bg-amber-500/20 text-amber-400;
+  }
+
+  .badge-success {
+    @apply bg-green-500/20 text-green-400;
+  }
+
+  .badge-info {
+    @apply bg-indigo-500/20 text-indigo-400;
+  }
+
+  .badge-muted {
+    @apply bg-slate-500/20 text-slate-400;
+  }
+
+  .btn {
+    @apply px-3 py-1.5 rounded-md text-sm font-medium transition-colors;
+  }
+
+  .btn-primary {
+    @apply bg-claw-accent hover:bg-claw-accent-bright text-white;
+  }
+
+  .btn-ghost {
+    @apply hover:bg-claw-border text-claw-muted hover:text-claw-text;
+  }
+
+  .input {
+    @apply bg-claw-bg border border-claw-border rounded-md px-3 py-1.5 text-sm
+           text-claw-text placeholder:text-claw-muted focus:outline-none
+           focus:border-claw-accent focus:ring-1 focus:ring-claw-accent;
+  }
+
+  .table-row {
+    @apply border-b border-claw-border hover:bg-claw-bg/50 transition-colors;
+  }
+}
