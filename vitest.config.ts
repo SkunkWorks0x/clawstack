@@ -8,6 +8,7 @@ export default defineConfig({
       '@clawstack/clawforge': resolve(__dirname, 'packages/clawforge/src/index.ts'),
       '@clawstack/clawguard': resolve(__dirname, 'packages/clawguard/src/index.ts'),
       '@clawstack/clawbudget': resolve(__dirname, 'packages/clawbudget/src/index.ts'),
+      '@clawstack/clawpipe': resolve(__dirname, 'packages/clawpipe/src/index.ts'),
     },
   },
 });

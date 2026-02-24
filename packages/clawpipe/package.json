@@ -10,9 +10,11 @@
     "dev": "tsc --watch"
   },
   "dependencies": {
-    "@clawstack/shared": "*"
+    "@clawstack/shared": "*",
+    "js-yaml": "^4.1.1"
   },
   "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
     "typescript": "^5.7.0",
     "vitest": "^3.0.0"
   }

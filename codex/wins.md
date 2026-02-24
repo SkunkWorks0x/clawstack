@@ -36,3 +36,11 @@ Patterns that worked. Read this before starting work.
 - Why it worked: Compound pattern proven — each product writes to same DB, listens to same bus, tests cross-product flow
 - Key detail: 155 tests passing across shared infra + 3 products. Zero regressions at each step.
 - Milestone: Day 30 target (three products in beta) achieved in Day 1 of building.
+
+### 2026-02-24 — ClawPipe Built — Deterministic Multi-Agent Pipeline Framework
+- Context: Fourth product. "Humans define the flow. Agents do the work." 69 tests, 224 total across stack.
+- What worked: Same proven pattern — web research (YAML frameworks, OpenClaw, multi-agent orchestration) → deep codebase read (SessionGraph, EventBus, types, existing product patterns) → build 4 components → test → verify full suite.
+- Why it worked: Reading exact API signatures (SessionGraph.startSession opts, createEvent signature, pipeline_steps schema) before writing any code. Variable resolution designed with clean ${steps.x.output.field} syntax. Parallel execution via Promise.all.
+- Key details: Pipeline Parser validates YAML → typed PipelineDefinition. Executor handles sequential + parallel + conditional branching + timeout + cost tracking. Result Validator does lightweight JSON Schema (type/required/min/max/enum). Registry stores/queries pipeline records. StepExecutor callback pattern lets ClawBudget SmartRouter optimize model per step and ClawGuard monitor each session independently.
+- Reuse when: ClawMemory next — same pattern. Also: the StepExecutor pattern (callback for actual execution) is good for any integration point.
+- Zero regressions: 224 tests passing across shared + 4 products.

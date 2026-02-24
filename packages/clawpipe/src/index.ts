@@ -6,8 +6,45 @@
  * Results typed/validated between steps.
  * Parallel execution. Full audit trail.
  *
- * Phase 2 build target: 5-7 weeks
- * Revenue: Free → $15/mo → pipeline marketplace
+ * Integration: SessionGraph, EventBus, ClawBudget, ClawGuard.
  */
+
 export const VERSION = '0.1.0';
-export { }; // placeholder
+
+// ─── Pipeline Parser ─────────────────────────────────────────────
+export { parsePipeline, validateAndTransform, getAllStepNames, countSteps } from './pipeline-parser.js';
+
+// ─── Pipeline Executor ───────────────────────────────────────────
+export { PipelineExecutor, resolveVariables } from './pipeline-executor.js';
+
+// ─── Result Validator ────────────────────────────────────────────
+export {
+  validateSchema,
+  validateStepOutput,
+  validateStepInput,
+  validateStepCompatibility,
+} from './result-validator.js';
+
+// ─── Pipeline Registry ───────────────────────────────────────────
+export { PipelineRegistry } from './pipeline-registry.js';
+export type { PipelineRecord, PipelineStepRecord, PipelineCostSummary } from './pipeline-registry.js';
+
+// ─── Types ───────────────────────────────────────────────────────
+export type {
+  PipelineDefinition,
+  PipelineStepDef,
+  SequentialStepDef,
+  ParallelGroupDef,
+  Condition,
+  ConditionOperator,
+  JsonSchema,
+  StepExecutionContext,
+  StepExecutionResult,
+  StepExecutor,
+  StepResult,
+  PipelineResult,
+  PipelineExecutionOptions,
+  ResolutionContext,
+  ValidationResult,
+  ParseResult,
+} from './types.js';
