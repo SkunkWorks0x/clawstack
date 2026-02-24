@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.clawstack/
+*.db
+*.db-wal
+*.db-shm
+.env
+.env.local
+.DS_Store
+coverage/
+.vscode/
+*.log
