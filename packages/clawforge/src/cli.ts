@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /**
  * ClawForge CLI — Secure OpenClaw Deployment
  *

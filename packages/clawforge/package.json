@@ -1,22 +1,39 @@
 {
-  "name": "@clawstack/clawforge",
-  "version": "0.1.0",
-  "private": true,
+  "name": "clawforge",
+  "version": "0.1.0-beta.1",
+  "description": "Secure deployment and lifecycle management for OpenClaw agents",
+  "keywords": ["openclaw", "security", "deployment", "ai-agents", "clawstack"],
+  "author": "Imani (@Skunkworks0x)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Skunkworks0x/clawstack",
+    "directory": "packages/clawforge"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "clawforge": "dist/cli.js"
+    "clawforge": "bin/clawforge.js"
   },
+  "files": [
+    "dist/",
+    "bin/"
+  ],
   "scripts": {
-    "build": "tsc",
+    "build": "node build.mjs",
     "test": "vitest run",
     "dev": "tsc --watch"
   },
   "dependencies": {
-    "@clawstack/shared": "*"
+    "better-sqlite3": "^11.0.0"
   },
   "devDependencies": {
+    "@clawstack/shared": "*",
+    "esbuild": "^0.25.0",
     "typescript": "^5.7.0",
     "vitest": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
