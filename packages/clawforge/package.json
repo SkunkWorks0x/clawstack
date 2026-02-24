@@ -4,6 +4,9 @@
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "clawforge": "dist/cli.js"
+  },
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
