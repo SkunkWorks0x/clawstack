@@ -61,3 +61,10 @@ Patterns that worked. Read this before starting work.
 - Compound integration verified: all products share Agent Session Graph + Event Bus
 - Cross-product flows working: Guard→Budget correlation, Pipe→Memory persistence, Guard→Memory threat storage
 - Pattern: identical prompt structure for every product — research first, 4 components, integration requirements, tests
+
+### 2026-02-24 — Dashboard Built — Full UI for All Five Products
+- Context: Unified web UI with Express API reading from Agent Session Graph
+- What worked: Same prompt pattern — list every page, every component, integration requirements
+- Key detail: SSE (Server-Sent Events) for real-time updates from EventBus — threats and budget alerts appear live
+- 306 tests total, 9m22s build time
+- ClawStack is now a visible, usable product — not just backend code
