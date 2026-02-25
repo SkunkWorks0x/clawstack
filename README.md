@@ -2,7 +2,7 @@
 
 **The Operating System for OpenClaw Agents**
 
-ClawStack is Rippling for AI agents. Five integrated products on one shared primitive — the Agent Session Graph.
+Unified security, cost control, memory, orchestration, and deployment — built on the Agent Session Graph.
 
 ## Products
 
