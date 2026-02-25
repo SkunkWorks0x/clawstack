@@ -10,9 +10,8 @@
  * Ctrl+C to stop.
  */
 
-import { tmpdir } from 'os';
-import { join } from 'path';
-import { randomUUID } from 'crypto';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { SessionGraph, EventBus } from '@clawstack/shared';
 import {
   OpenClawTailer,
@@ -79,13 +78,15 @@ function badge(event: TailerEvent): string {
 function main() {
   const sessionsDir = process.argv[2] || DEFAULT_SESSIONS_DIR;
 
-  // Temp DB — we're monitoring, not persisting
-  const dbPath = join(tmpdir(), `clawguard-live-${randomUUID().slice(0, 8)}.db`);
+  // Persist to the project's SessionGraph DB so dashboard can read it
+  const projectRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
+  const dbPath = join(projectRoot, '.clawstack', 'session-graph.db');
   const graph = new SessionGraph(dbPath);
   const bus = new EventBus();
 
-  // Register Blade as the monitored agent
-  const agent = graph.registerAgent({
+  // Reuse existing Blade agent or register a new one
+  const existing = graph.listAgents().find(a => a.name === 'Blade');
+  const agent = existing || graph.registerAgent({
     name: 'Blade',
     platform: 'openclaw',
     version: '2.1.0',
