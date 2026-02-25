@@ -23,6 +23,12 @@ export { PolicyEngine, DEFAULT_POLICY } from './policy-engine.js';
 export { KillSwitch } from './kill-switch.js';
 export { ThreatIntel } from './threat-intel.js';
 
+// OpenClaw integration
+export { OpenClawTailer, DEFAULT_SESSIONS_DIR } from './openclaw-tailer.js';
+export type { TailerConfig, TailerEvent, OpenClawJSONLEntry, OpenClawToolCall, OpenClawMessage } from './openclaw-tailer.js';
+export { OpenClawKillSwitch } from './openclaw-killswitch.js';
+export type { GatewayConfig, GatewaySocket, SocketFactory, ConnectionState, KillResult } from './openclaw-killswitch.js';
+
 // Types
 export type {
   SecurityPolicy,
