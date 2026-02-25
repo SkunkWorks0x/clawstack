@@ -93,7 +93,7 @@ export class CrossProductIntegration {
         source: 'clawguard',
         reason,
       },
-      { sessionId: event.sessionId, agentId }
+      { sessionId: event.sessionId ?? undefined, agentId }
     ));
   }
 
@@ -154,7 +154,7 @@ export class CrossProductIntegration {
         source: 'clawpipe',
         pipelineId,
       },
-      { sessionId: event.sessionId, agentId }
+      { sessionId: event.sessionId ?? undefined, agentId }
     ));
   }
 

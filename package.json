@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces",
-    "test": "npm run test --workspaces --if-present",
+    "test": "vitest run",
     "lint": "eslint 'packages/*/src/**/*.ts'",
     "clean": "rm -rf packages/*/dist",
     "dev:dashboard": "npm run dev --workspace=packages/dashboard"

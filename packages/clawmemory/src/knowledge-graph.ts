@@ -141,7 +141,7 @@ export class KnowledgeGraph {
   traverse(entityId: string, options?: GraphQueryOptions): TraversalResult | null {
     const maxDepth = options?.maxDepth ?? 2;
     const minWeight = options?.minWeight ?? 0.1;
-    const entityTypes = options?.entityType ? new Set(options.entityTypes) : null;
+    const entityTypes = options?.entityTypes ? new Set(options.entityTypes) : null;
     const limit = options?.limit ?? 50;
 
     const rootEntity = this.getEntity(entityId);
