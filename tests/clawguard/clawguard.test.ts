@@ -17,6 +17,8 @@ import {
   KillSwitch,
   ThreatIntel,
   DEFAULT_POLICY,
+  OPENCLAW_SANDBOXED_POLICY,
+  POLICY_PRESETS,
 } from '@clawstack/clawguard';
 
 // ─── Test Helpers ───────────────────────────────────────────────────
@@ -287,6 +289,87 @@ describe('PolicyEngine', () => {
       windowMs: 60000,
     });
     expect(result).toBeNull();
+  });
+});
+
+// ─── OpenClaw Sandboxed Policy Tests ─────────────────────────────────
+
+describe('OpenClaw Sandboxed Policy', () => {
+  it('is available as a preset', () => {
+    expect(POLICY_PRESETS['openclaw-sandboxed']).toBeDefined();
+    expect(OPENCLAW_SANDBOXED_POLICY.name).toBe('openclaw-sandboxed');
+  });
+
+  it('allows shell execution in sandboxed mode', () => {
+    const engine = new PolicyEngine(OPENCLAW_SANDBOXED_POLICY);
+    const result = engine.evaluateProcessSpawn({
+      command: 'bash',
+      args: ['-c', 'echo hello'],
+    });
+    expect(result).toBeNull();
+  });
+
+  it('allows exec-style commands (curl, wget) in sandboxed mode', () => {
+    const engine = new PolicyEngine(OPENCLAW_SANDBOXED_POLICY);
+
+    // curl is blocked in default policy but allowed in sandboxed
+    const curlResult = engine.evaluateProcessSpawn({
+      command: 'python',
+      args: ['script.py'],
+    });
+    expect(curlResult).toBeNull();
+
+    // arbitrary commands allowed since shell exec is on
+    const customResult = engine.evaluateProcessSpawn({
+      command: 'cargo',
+      args: ['build'],
+    });
+    expect(customResult).toBeNull();
+  });
+
+  it('still blocks destructive commands in sandboxed mode', () => {
+    const engine = new PolicyEngine(OPENCLAW_SANDBOXED_POLICY);
+    const result = engine.evaluateProcessSpawn({
+      command: 'rm',
+      args: ['-rf', '/'],
+    });
+    expect(result).not.toBeNull();
+    expect(result!.threatSignature).toBe('PROC_BLOCKED_COMMAND');
+    expect(result!.blocked).toBe(true);
+  });
+
+  it('still blocks mkfs in sandboxed mode', () => {
+    const engine = new PolicyEngine(OPENCLAW_SANDBOXED_POLICY);
+    const result = engine.evaluateProcessSpawn({
+      command: 'mkfs',
+      args: ['-t', 'ext4', '/dev/sda1'],
+    });
+    expect(result).not.toBeNull();
+    expect(result!.threatSignature).toBe('PROC_BLOCKED_COMMAND');
+  });
+
+  it('default policy still blocks shell exec', () => {
+    const engine = new PolicyEngine(DEFAULT_POLICY);
+    const result = engine.evaluateProcessSpawn({
+      command: 'bash',
+      args: ['-c', 'echo hello'],
+    });
+    expect(result).not.toBeNull();
+    expect(result!.threatSignature).toBe('PROC_SHELL_EXEC');
+  });
+
+  it('preserves network and filesystem defaults', () => {
+    const engine = new PolicyEngine(OPENCLAW_SANDBOXED_POLICY);
+    const policy = engine.getPolicy();
+
+    // Network still blocks external by default
+    expect(policy.network.blockExternalByDefault).toBe(true);
+
+    // Filesystem still blocks sensitive paths
+    expect(policy.filesystem.blockedPaths).toContain('/etc/passwd');
+
+    // Cost anomaly policy unchanged
+    expect(policy.costAnomaly.spikeThresholdMultiplier).toBe(3);
   });
 });
 

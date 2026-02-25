@@ -90,6 +90,40 @@ export const DEFAULT_POLICY: SecurityPolicy = {
   costAnomaly: DEFAULT_COST_ANOMALY_POLICY,
 };
 
+// ─── OpenClaw Sandboxed Policy ───────────────────────────────────────
+// For agents running inside a Docker sandbox (e.g. Blade).
+// Shell exec and process spawning are safe because the container IS the sandbox.
+// Still blocks truly destructive commands that could break the container state.
+
+const SANDBOXED_PROCESS_POLICY: ProcessPolicy = {
+  allowShellExec: true,
+  allowedCommands: [],  // Not used when allowShellExec is true
+  blockedCommands: [
+    'rm -rf /',
+    'mkfs',
+    'dd',
+    'shutdown',
+    'reboot',
+  ],
+  maxChildProcesses: 50,
+};
+
+export const OPENCLAW_SANDBOXED_POLICY: SecurityPolicy = {
+  name: 'openclaw-sandboxed',
+  version: '1.0.0',
+  network: DEFAULT_NETWORK_POLICY,
+  filesystem: DEFAULT_FILESYSTEM_POLICY,
+  process: SANDBOXED_PROCESS_POLICY,
+  costAnomaly: DEFAULT_COST_ANOMALY_POLICY,
+};
+
+// ─── Policy Presets ──────────────────────────────────────────────────
+
+export const POLICY_PRESETS: Record<string, SecurityPolicy> = {
+  'default': DEFAULT_POLICY,
+  'openclaw-sandboxed': OPENCLAW_SANDBOXED_POLICY,
+};
+
 // ─── Policy Engine ──────────────────────────────────────────────────
 
 export class PolicyEngine {

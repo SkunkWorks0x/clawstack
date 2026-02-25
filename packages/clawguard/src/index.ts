@@ -19,7 +19,7 @@ export const VERSION = '0.1.0';
 // Core components
 export { RuntimeMonitor } from './runtime-monitor.js';
 export type { MonitorConfig } from './runtime-monitor.js';
-export { PolicyEngine, DEFAULT_POLICY } from './policy-engine.js';
+export { PolicyEngine, DEFAULT_POLICY, OPENCLAW_SANDBOXED_POLICY, POLICY_PRESETS } from './policy-engine.js';
 export { KillSwitch } from './kill-switch.js';
 export { ThreatIntel } from './threat-intel.js';
 

@@ -207,15 +207,17 @@ export class OpenClawTailer {
       return;
     }
 
-    // Sort by modification time — newest last
-    files.sort((a, b) => {
-      const aStat = statSync(join(sessionsDir, a));
-      const bStat = statSync(join(sessionsDir, b));
-      return aStat.mtimeMs - bStat.mtimeMs;
-    });
-
+    // Seek to the END of all existing files so only new lines
+    // written after start() are processed. This prevents replaying
+    // historical events which floods the monitor on startup.
     for (const file of files) {
-      this.processFile(join(sessionsDir, file));
+      const filePath = join(sessionsDir, file);
+      try {
+        const stat = statSync(filePath);
+        this.fileOffsets.set(filePath, stat.size);
+      } catch {
+        // File disappeared between readdir and stat — ignore
+      }
     }
   }
 

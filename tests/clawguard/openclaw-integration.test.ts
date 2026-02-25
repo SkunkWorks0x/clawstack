@@ -428,7 +428,7 @@ describe('OpenClawTailer', () => {
     expect(() => tailer.start()).toThrow('Sessions directory does not exist');
   });
 
-  it('reads existing JSONL files on start', async () => {
+  it('skips existing JSONL files on start (seek-to-end)', async () => {
     // Write a session file before starting
     const sessionFile = join(sessionsDir, 'test-session.jsonl');
     const lines = [
@@ -453,7 +453,46 @@ describe('OpenClawTailer', () => {
 
     tailer.stop();
 
-    expect(events.length).toBeGreaterThan(0);
+    // Historical events should NOT be replayed — tailer seeks to end on start
+    expect(events.length).toBe(0);
+  });
+
+  it('processes only new lines written after start', async () => {
+    // Write pre-existing content
+    const sessionFile = join(sessionsDir, 'mixed-session.jsonl');
+    const preExisting = [
+      makeSessionHeader('mixed-session'),
+      makeToolCallEntry('old-1', 'read', { file_path: './old-file.ts' }),
+      makeToolCallEntry('old-2', 'exec', { command: 'node old.js' }),
+    ];
+    writeFileSync(sessionFile, preExisting.join('\n') + '\n');
+
+    const events: TailerEvent[] = [];
+    const tailer = new OpenClawTailer(graph, bus, {
+      sessionsDir,
+      agentId,
+      sessionId,
+      monitorConfig: { autoKill: false },
+      onEvent: (e) => events.push(e),
+    });
+
+    tailer.start();
+    await new Promise(r => setTimeout(r, 50));
+
+    // Pre-existing content should be skipped
+    expect(events.length).toBe(0);
+
+    // Now append NEW content after start
+    appendFileSync(sessionFile, makeToolCallEntry('new-1', 'read', { file_path: './new-file.ts' }) + '\n');
+
+    // fs.watch needs a moment to fire
+    await new Promise(r => setTimeout(r, 200));
+
+    tailer.stop();
+
+    // Only the new line should be processed
+    expect(events.length).toBe(1);
+    expect(events[0].toolName).toBe('read');
   });
 
   it('detects new lines appended to existing file', async () => {
