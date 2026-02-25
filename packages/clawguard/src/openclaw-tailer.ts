@@ -9,7 +9,7 @@
  * plugin installation. Just point it at the session directory.
  */
 
-import { watch, readFileSync, readdirSync, statSync, existsSync } from 'fs';
+import { watch, readdirSync, statSync, existsSync, openSync, readSync, closeSync, fstatSync } from 'fs';
 import { join, basename } from 'path';
 import type { SessionGraph, EventBus } from '@clawstack/shared';
 import { RuntimeMonitor } from './runtime-monitor.js';
@@ -222,33 +222,37 @@ export class OpenClawTailer {
   }
 
   private processFile(filePath: string): void {
-    let stat;
+    let fd: number;
+    let stat: ReturnType<typeof fstatSync>;
     try {
-      stat = statSync(filePath);
+      fd = openSync(filePath, 'r');
+      stat = fstatSync(fd);
     } catch {
       return;
     }
 
     const currentOffset = this.fileOffsets.get(filePath) ?? 0;
-    if (stat.size <= currentOffset) return;
-
-    // Read only new bytes
-    const content = readFileSync(filePath, 'utf-8');
-    const lines = content.split('\n');
-
-    // Find the line offset corresponding to byte offset
-    let bytesSeen = 0;
-    let startLine = 0;
-    for (let i = 0; i < lines.length; i++) {
-      if (bytesSeen >= currentOffset) {
-        startLine = i;
-        break;
-      }
-      bytesSeen += Buffer.byteLength(lines[i] + '\n', 'utf-8');
+    if (stat.size <= currentOffset) {
+      closeSync(fd);
+      return;
     }
 
-    for (let i = startLine; i < lines.length; i++) {
-      const line = lines[i];
+    // Read ONLY new bytes from the offset — never re-read old content.
+    // The previous implementation read the entire file then tried to
+    // find the byte offset via line-counting, which was fragile and
+    // caused full replay on startup.
+    const newByteCount = stat.size - currentOffset;
+    const buffer = Buffer.alloc(newByteCount);
+    try {
+      readSync(fd, buffer, 0, newByteCount, currentOffset);
+    } finally {
+      closeSync(fd);
+    }
+
+    const chunk = buffer.toString('utf-8');
+    const lines = chunk.split('\n');
+
+    for (const line of lines) {
       if (!line.trim()) continue;
       // Fire and forget — errors handled via onError callback
       this.processLine(line).catch(err => {

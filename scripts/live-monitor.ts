@@ -18,6 +18,7 @@ import {
   OpenClawTailer,
   DEFAULT_SESSIONS_DIR,
   VERSION,
+  OPENCLAW_SANDBOXED_POLICY,
 } from '@clawstack/clawguard';
 import type { TailerEvent } from '@clawstack/clawguard';
 
@@ -107,7 +108,7 @@ function main() {
   console.log(`${c.dim}  Agent:    ${c.reset}${c.bold}${agent.name}${c.reset} ${c.dim}(${agent.agentId.slice(0, 8)})${c.reset}`);
   console.log(`${c.dim}  Session:  ${c.reset}${c.green}active${c.reset} ${c.dim}(${session.sessionId.slice(0, 8)})${c.reset}`);
   console.log(`${c.dim}  Watching: ${c.reset}${sessionsDir}`);
-  console.log(`${c.dim}  Policy:   ${c.reset}default v1.0.0 ${c.dim}│${c.reset} AutoKill: ${c.green}enabled${c.reset}`);
+  console.log(`${c.dim}  Policy:   ${c.reset}openclaw-sandboxed v1.0.0 ${c.dim}│${c.reset} AutoKill: ${c.green}enabled${c.reset}`);
   console.log(`${c.dim}${line()}${c.reset}`);
   console.log(`${c.dim}  Tailing Blade activity… press Ctrl+C to stop.${c.reset}`);
   console.log();
@@ -150,26 +151,7 @@ function main() {
     sessionId: session.sessionId,
     monitorConfig: {
       autoKill: true,
-      policy: {
-        network: {
-          allowedDomains: ['localhost', '127.0.0.1', '::1', 'api.anthropic.com', 'api.openai.com'],
-          blockedDomains: [],
-          blockExternalByDefault: false,
-          maxRequestsPerMinute: 120,
-          exfiltrationPatterns: [
-            'base64=[A-Za-z0-9+/=]{100,}',
-            'data=[A-Fa-f0-9]{64,}',
-            '(password|secret|token|key)=',
-            '\\.(txt|csv|json|db|sqlite)$',
-          ],
-        },
-        filesystem: {
-          allowedPaths: ['/'],
-          blockedPaths: ['~/.ssh', '~/.aws', '/etc/passwd', '/etc/shadow'],
-          blockWritesOutsideSandbox: false,
-          sandboxRoot: process.cwd(),
-        },
-      },
+      policy: OPENCLAW_SANDBOXED_POLICY,
     },
     onEvent,
     onError: (err) => {
