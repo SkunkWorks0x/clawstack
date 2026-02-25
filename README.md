@@ -29,6 +29,14 @@ Five products. One shared primitive. Every product reads from and writes to the 
 | **ClawMemory** | Knowledge graph memory with token-budgeted recall | SmartCapture (entity/relation extraction), KnowledgeGraph (BFS traversal, workspace isolation), TokenRecall (scored retrieval under token cap), GracefulCompaction |
 | **Dashboard** | Unified web UI for all five products | 6 pages, 15 API endpoints, SSE real-time alerts, Recharts visualizations |
 
+## Demo
+
+![306 tests passing across all 5 products](assets/demo-tests.png)
+
+![ClawForge security audit: 9/9 checks passed](assets/demo-clawforge.png)
+
+![ClawGuard blocking data exfiltration in real-time](assets/demo-clawguard.png)
+
 ## Architecture
 
 ```
